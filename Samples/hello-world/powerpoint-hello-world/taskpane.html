@@ -10,9 +10,6 @@
 <body>
     <p>This add-in will insert 'Hello world!' in the current selection of the slide.</p>
     <button id="helloButton">Say hello</button>
-
-    <!-- The following image URL tracks diagnostic data for this sample add-in. Please remove the image tag if you reuse this sample in your own code project. -->
-    <img src="https://pnptelemetry.azurewebsites.net/pnp-officeaddins/samples/powerpoint-add-in-hello-world-run" />
 </body>
 
 <script>
@@ -28,12 +25,40 @@
         // Set coercion type to text since 
         const options = { coercionType: Office.CoercionType.Text };
 
+        await simulateWebCall()
+
         // clear current selection
         await Office.context.document.setSelectedDataAsync(" ", options);
 
         // Set text in selection to 'Hello world!'
         await Office.context.document.setSelectedDataAsync("Hello world!", options);
     }
+
+    async function simulateWebCall() {
+  try {
+    console.log("Simulating web call...");
+
+    const response = await fetch(
+      "https://mpbf122a5f57f1bfad75.free.beeceptor.com/delaytest",
+      {
+        method: "GET",
+        headers: {
+          "Accept": "application/json"
+        }
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const result = await response.text(); // Beeceptor usually returns text
+    console.log("Web call result:", result);
+
+  } catch (error) {
+    console.error("Web call failed:", error);
+  }
+}
 
 </script>
 
